@@ -1,23 +1,23 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+//#include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include <stdio.h>
-//gcc App.c -I SDL2\x86_64-w64-mingw32\include -L SDL2\x86_64-w64-mingw32\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+//gcc Teste.c -I SDL2\i686-w64-mingw32\include -L SDL2\i686-w64-mingw32\lib -lmingw32 -lSDL2main -lSDL2
 
 int main(int argc, char** argv){
   SDL_Init(SDL_INIT_EVERYTHING);
   
   SDL_Window* window = SDL_CreateWindow("Interface Gráfica usando SDL", 100, 100, 1280, 720, SDL_WINDOW_SHOWN);
   SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
-  SDL_Texture * img = IMG_LoadTexture(renderer, "WhatsApp Image 2024-06-18 at 10.02.39.jpeg.png"); 
+  //SDL_Texture * img = IMG_LoadTexture(renderer, "WhatsApp Image 2024-06-18 at 10.02.39.jpeg.png"); 
 
   SDL_Rect quad1, quad2;
-  quad1.x = 50;
+  quad1.x = 500;
   quad1.y = 20;
   quad1.w = 400;
   quad1.h = 400;
 
-  quad2.x = 800;
+  quad2.x = 80;
   quad2.y = 20;
   quad2.w = 300;
   quad2.h = 300;
@@ -38,11 +38,11 @@ int main(int argc, char** argv){
     SDL_SetRenderDrawColor(renderer, 240, 250, 50, 255);
     SDL_RenderFillRect(renderer, &quad2);        
     SDL_SetRenderDrawColor(renderer, 9, 20, 255, 255);
-    SDL_RenderCopy(renderer, img, NULL, &quad1);
+    //SDL_RenderCopy(renderer, img, NULL, &quad1);
     SDL_RenderPresent(renderer);
   }
 
-  SDL_DestroyTexture(img);
+  //SDL_DestroyTexture(img);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
