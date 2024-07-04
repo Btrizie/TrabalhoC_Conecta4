@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 //gcc App.c -I SDL2\x86_64-w64-mingw32\include\SDL2 -L SDL2\x86_64-w64-mingw32\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+
+int verificaColuna (int x);
+int verificaLinha (int coluna, int matriz[6][7]);
+
 int main(int argc, char** argv){
   SDL_Init(SDL_INIT_EVERYTHING);
   
@@ -11,6 +15,17 @@ int main(int argc, char** argv){
   SDL_Texture * img = IMG_LoadTexture(renderer, "Tabuleiro.png"); 
   SDL_Texture * circleR = IMG_LoadTexture(renderer, "CRed.png"); 
   SDL_Texture * circleY = IMG_LoadTexture(renderer, "CYellow.png"); 
+
+//1, quando for a vez do jogador 1, e 2, quando for a vez do jogador 2  
+  int jogador = 1;
+
+//matriz que representa o tabuleiro
+  int matriz[6][7];
+    for (int i = 0; i < 6; ++i) {
+        for (int j = 0; j < 7; ++j) {
+            matriz[i][j]=0;
+        }
+    }
 
 //interface tabuleiro
   SDL_Rect quad1, quad2, quad3; 
@@ -40,13 +55,35 @@ int main(int argc, char** argv){
   while(true)
   {
     SDL_Event event;
-    //sair do jogo
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, img, NULL, &quad1);
+    SDL_SetRenderDrawColor(renderer, 127, 207, 240, 255); //altera cor de fundo
+    
     while(SDL_PollEvent(&event)){
+      //sair do jogo
       if( event.type == SDL_QUIT ){
         exit(0);
       }
 
-	  else if( event.type == SDL_MOUSEBUTTONDOWN){
+	    else if( event.type == SDL_MOUSEBUTTONDOWN)
+      {
+        int mouse_x = event.button.x;
+        int mouse_y = event.button.y;
+        
+        int x, y;
+        x = verificaColuna (mouse_x);
+        y = verificaLinha (mouse_y, matriz);
+
+        if (x >= 0 && y >= 0)
+        {
+          matriz[x][y] = jogador; 
+        }
+        
+        if (jogador == 1)
+          jogador = 2;
+        else 
+          jogador = 1;
+        
         /*else if( event.type == SDL_MOUSEBUTTONDOWN)
       {
             //evento do jogador
@@ -66,13 +103,32 @@ int main(int argc, char** argv){
         }
       //if 4 bolihas mesma cor, win
       }*/
-        quad2.x -= 20;
+        //quad2.x -= 20;
       }
     }
-
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, img, NULL, &quad1);
-    SDL_SetRenderDrawColor(renderer, 127, 207, 240, 255); //altera cor de fundo
+    for (int i = 0; i < 6; ++i) 
+    {
+      for (int j = 0; j < 7; ++j) 
+      {
+        SDL_Rect posicaoPeca;
+      posicaoPeca.x = 25;
+      posicaoPeca.y = 27;
+      posicaoPeca.w = 110;
+      posicaoPeca.h = 85;
+        if (matriz[i][j] == 1) 
+        {
+          posicaoPeca.x += 130 * i;
+          posicaoPeca.y += 102 * j;
+          SDL_RenderCopy(renderer, circleR, NULL, &posicaoPeca);
+        } 
+        else if (matriz[i][j] == 2) 
+        {
+          posicaoPeca.x += 130 * i;
+          posicaoPeca.y += 102 * j;
+          SDL_RenderCopy(renderer, circleY, NULL, &posicaoPeca);
+        }
+      }
+    } 
     SDL_RenderCopy(renderer, circleR, NULL, &quad2);   
     SDL_RenderCopy(renderer, circleY, NULL, &quad3);   
     SDL_RenderPresent(renderer);
@@ -83,4 +139,58 @@ int main(int argc, char** argv){
   SDL_DestroyWindow(window);
   SDL_Quit();
   return 0;
+}
+
+
+int verificaColuna (int x)
+{
+  if (x > 27 && x < 157) 
+  {
+    return 0;
+  }    
+  else if (x < 287)
+  {
+    return 1; 
+  }
+  else if (x < 417)
+  {
+    return 2;
+  }
+  else if (x < 547)
+  {
+    return 3;
+  }
+  else if (x < 677)
+  {
+    return 4;
+  }
+  else if (x < 807)
+  {
+    return 5;
+  }
+  else if (x < 937) //nao sei o limite do tabuleiro
+  {
+    return 6;
+  }
+  else
+  {
+    return -1;
+  }
+}
+
+int verificaLinha (int coluna, int matriz[6][7]) 
+{
+  int linha = 5; 
+  while (linha >= 0)
+  {
+    if (matriz[linha][coluna] > 0)
+    {
+      if (linha == 0)
+        return -1;
+      else
+        return linha - 1;
+    }
+    linha--;
+  }
+  return 5;
 }
